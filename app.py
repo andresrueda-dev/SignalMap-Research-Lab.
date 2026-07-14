@@ -1,20 +1,32 @@
 import streamlit as st
-import os
+import pandas as pd
 
-st.title("🧪 SignalMap Research Lab")
+st.title("SignalMap Research Lab")
 
-st.write("La app inició correctamente.")
+archivo = "data/historico.csv"
 
-st.write("Directorio actual:")
+with open(archivo, "rb") as f:
+    datos = f.read(200)
 
-st.code(os.getcwd())
+st.subheader("Primeros bytes del archivo")
+st.code(datos)
 
-st.write("Archivos:")
+st.write("Tamaño del archivo (bytes):", len(open(archivo, "rb").read()))
 
-st.write(os.listdir())
+try:
 
-if os.path.exists("data"):
-    st.success("Carpeta data encontrada")
-    st.write(os.listdir("data"))
-else:
-    st.error("No existe la carpeta data")
+    df = pd.read_csv(
+        archivo,
+        sep=None,
+        engine="python"
+    )
+
+    st.success("CSV leído correctamente")
+
+    st.write(df.head())
+
+    st.write(df.columns.tolist())
+
+except Exception as e:
+
+    st.error(e)
