@@ -106,3 +106,25 @@ print(
 )
 
 print("\nProceso terminado.")
+
+from core.memory_engine import MemoryEngine
+
+print("\nConstruyendo memoria histórica...")
+
+memory = MemoryEngine()
+
+history = memory.get_memory(
+    matrix,
+    state_vectors,
+    top=20
+)
+
+history.to_csv(
+    "output/memory_engine.csv",
+    index=False,
+    encoding="utf-8-sig"
+)
+
+print("\nMemoria creada.")
+
+print(history)
