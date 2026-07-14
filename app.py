@@ -80,4 +80,29 @@ print(f"\nArchivo generado:")
 
 print(OUTPUT_FILE)
 
+from core.similarity_engine import SimilarityEngine
+
+print("\nCalculando similitud entre estados...")
+
+sim = SimilarityEngine()
+
+matrix = sim.build_similarity_matrix(state_vectors)
+
+matrix.to_csv(
+    "output/similarity_matrix.csv",
+    encoding="utf-8-sig"
+)
+
+ultimo = state_vectors.iloc[-1]["concurso"]
+
+print("\nEstados más parecidos al último sorteo:\n")
+
+print(
+    sim.most_similar(
+        matrix,
+        ultimo,
+        top=10
+    )
+)
+
 print("\nProceso terminado.")
