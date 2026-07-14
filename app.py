@@ -1,46 +1,53 @@
 import streamlit as st
 import pandas as pd
 
-st.title("SignalMap Research Lab")
+from core.state_vector import StateVectorEngine
+from core.experiment_engine import ExperimentEngine
+
+st.set_page_config(page_title="SignalMap Research Lab", layout="wide")
+
+st.title("🧪 SignalMap Research Lab")
 
 archivo = "data/historico.csv"
 
-with open(archivo, "rb") as f:
-    datos = f.read(200)
+# ==========================
+# CARGAR HISTÓRICO
+# ==========================
 
-st.subheader("Primeros bytes del archivo")
-st.code(datos)
+dataset = pd.read_csv(
+    archivo,
+    sep=None,
+    engine="python"
+)
 
-st.write("Tamaño del archivo (bytes):", len(open(archivo, "rb").read()))
+st.success(f"Histórico cargado correctamente ({len(dataset)} sorteos)")
 
-try:
+st.dataframe(dataset.head())
 
-    df = pd.read_csv(
-        archivo,
-        sep=None,
-        engine="python"
-    )
+# ==========================
+# GENERAR STATE VECTORS
+# ==========================
 
-    st.success("CSV leído correctamente")
+st.header("State Vector Engine")
 
-    st.write(df.head())
+engine = StateVectorEngine()
 
-    st.write(df.columns.tolist())
+state_vectors = engine.build_dataset(dataset)
 
-except Exception as e:
+st.success(f"State Vectors generados: {len(state_vectors)}")
 
-    st.error(e)
-from core.experiment_engine import ExperimentEngine
+st.dataframe(state_vectors.head())
 
-print("\n==============================")
-print("EXPERIMENTO 001")
-print("==============================")
+# ==========================
+# EXPERIMENTO 001
+# ==========================
 
-engine = ExperimentEngine(dataset)
+st.header("Experimento 001")
 
-dataset = engine.add_target()
+exp = ExperimentEngine(state_vectors)
 
-resultado = engine.experiment_sum(150)
+state_vectors = exp.add_target()
 
-for k, v in resultado.items():
-    print(f"{k}: {v}")
+resultado = exp.experiment_sum(150)
+
+st.json(resultado)
