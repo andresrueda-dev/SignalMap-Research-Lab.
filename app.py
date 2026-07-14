@@ -30,3 +30,17 @@ try:
 except Exception as e:
 
     st.error(e)
+from core.experiment_engine import ExperimentEngine
+
+print("\n==============================")
+print("EXPERIMENTO 001")
+print("==============================")
+
+engine = ExperimentEngine(dataset)
+
+dataset = engine.add_target()
+
+resultado = engine.experiment_sum(150)
+
+for k, v in resultado.items():
+    print(f"{k}: {v}")
